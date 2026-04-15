@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author digis
  */
 @RestController
-@RequestMapping("nuevo")
+@RequestMapping("api")
 public class UsuarioRestController {
     
     @Autowired
