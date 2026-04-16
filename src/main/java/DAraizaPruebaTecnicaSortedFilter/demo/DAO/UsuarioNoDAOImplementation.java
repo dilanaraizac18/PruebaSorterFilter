@@ -4,6 +4,7 @@
  */
 package DAraizaPruebaTecnicaSortedFilter.demo.DAO;
 
+import Component.UsuarioComponent;
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Direccion;
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Result;
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Usuario;
@@ -15,110 +16,28 @@ import java.util.UUID;
 import java.util.stream.Collector;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author digis
  */
-@Repository
+@Service
 public class UsuarioNoDAOImplementation implements IUsuario {
 
 
+    @Autowired
+    private UsuarioComponent usuarioComponent;
+    
+    
     @Override
     public ArrayList<Usuario> GetALL() {
         
-        UUID uuid = UUID.randomUUID();
-        String uuidString = uuid.toString();
-        Result result = new Result();
-//        try{
-        ArrayList<Direccion> direcciones = new ArrayList<>();
-        ArrayList<Usuario> usuarios = new ArrayList<>();
-        Usuario usuario1 = new Usuario();
-        
-        usuario1.setIdUsuario(uuidString);
-        usuario1.setEmail("usuario@email.com");
-        usuario1.setFecha(LocalDate.of(2000, Month.MARCH, 19));
-        usuario1.setTaxId("FFAFAFLLFM4OO444");
-        usuario1.setTelefono("7444494504");
-        usuario1.setUsername("Usuario1");
-        usuario1.setPassword("Welcome01");
+      
 
-        usuario1.Direcciones = new ArrayList<>();
-        Direccion direccion1 = new Direccion();
-        direccion1.setIdDireccion(1);
-        direccion1.setCalle("Revolucion");
-        direccion1.setNombre("Direccion casa");
-        direccion1.setPais("MX");
-        
-        usuario1.Direcciones.add(direccion1);
-        
-        Direccion direccion2 = new Direccion();
-        direccion2.setIdDireccion(2);
-        direccion2.setCalle("Reforma");
-        direccion2.setNombre("Direccion Trabajo");
-        direccion2.setPais("MX");
-        
-        usuario1.Direcciones.add(direccion2);
-        
-        Usuario usuario2 = new Usuario();
-        usuario2.setIdUsuario(uuidString);
-        usuario2.setEmail("usuario2@email.com");
-        usuario2.setFecha(LocalDate.of(1990, Month.AUGUST, 2));
-        usuario2.setTaxId("sSDADAFA4433");
-        usuario2.setTelefono("6444494504");
-        usuario2.setUsername("Usuario2");
-        usuario2.setPassword("Welcome01");
-
-        usuario2.Direcciones = new ArrayList<>();
-        Direccion direccion3 = new Direccion();
-        direccion3.setIdDireccion(3);
-        direccion3.setCalle("Cuzco");
-        direccion3.setNombre("Direccion casa");
-        direccion3.setPais("MX");
-        
-        usuario2.Direcciones.add(direccion3);
-        
-        Usuario usuario3 = new Usuario();
-        usuario3.setIdUsuario(uuidString);
-        usuario3.setEmail("usuario@email.com");
-        usuario3.setFecha(LocalDate.of(2003, Month.MARCH, 29));
-        usuario3.setTaxId("FFAFAFLLFM4OO444");
-        usuario3.setTelefono("5444494504");
-        usuario3.setUsername("Usuario1");
-        usuario3.setPassword("Welcome01");
-
-        usuario3.Direcciones = new ArrayList<>();
-        Direccion direccion4 = new Direccion();
-        direccion4.setIdDireccion(4);
-        direccion4.setCalle("Matanza");
-        direccion4.setNombre("Direccion casa");
-        direccion4.setPais("MX");
-        
-        usuario3.Direcciones.add(direccion4);
-        
-        usuarios.add(usuario1);
-        usuarios.add(usuario2);
-        usuarios.add(usuario3);
-
-        
-        
-        
-//        result.objects = new ArrayList<>();
-//
-//        for (Usuario usuario : usuarios) {
-//            result.objects.add(usuario);
-//
-//        }
-//        result.correct = true;
-//        }
-//        catch(Exception ex){
-//            result.correct = false;
-//            result.errorMessage = ex.getLocalizedMessage();
-//            result.ex = ex;
-//        }
-
-        return usuarios;
+        return new ArrayList<>(usuarioComponent.PostContructUsuario());
 
         
         
@@ -167,23 +86,98 @@ public class UsuarioNoDAOImplementation implements IUsuario {
     
     }
 
-    @Override
-    public List<Usuario> Filter(String filterBy) {
-        List<Usuario> lista = GetALL();
-        
-        
-        return lista.stream().filter(u -> {
+    
+ @Override
+public List<Usuario> Filter(String filterBy) {
 
-            switch (filterBy.toLowerCase()) {
-                case "email":
-                    return u.getTelefono().startsWith(filterBy);
-                    break;
-                default:
-            }
-        }
-        )
-                
-        
+    String filterValido = filterBy.replace(" ", "+");
+    List<Usuario> lista = GetALL();
+
+    if (filterBy == null || filterBy.isEmpty()) {
+        throw new RuntimeException("El filtro no puede ser vacío");
     }
 
+    String[] partes = filterValido.split("\\+");
+
+    if (partes.length != 3) {
+        throw new RuntimeException("Formato inválido. Usa: campo+operador+valor");
+    }
+
+    String campo = partes[0].toLowerCase();
+    String operador = partes[1].toLowerCase();
+    String valor = partes[2].toLowerCase();
+
+    return lista.stream().filter(u -> {
+
+        String campoValor = "";
+
+        switch (campo) {
+            case "email":
+                campoValor = u.getEmail();
+                break;
+            case "id":
+                campoValor = u.getIdUsuario();
+                break;
+            case "name":
+                campoValor = u.getUsername();
+                break;
+            case "phone":
+                campoValor = u.getTelefono();
+                break;
+            case "tax_id":
+                campoValor = u.getTaxId();
+                break;
+            case "created_at":
+                campoValor = u.getFecha().toString();
+                break;
+            default:
+                return false;
+        }
+
+        if (campoValor == null) return false;
+
+        campoValor = campoValor.toLowerCase();
+
+        switch (operador) {
+            case "co": // contains
+                return campoValor.contains(valor);
+
+            case "sw": // starts with
+                return campoValor.startsWith(valor);
+
+            case "ew": // ends with
+                return campoValor.endsWith(valor);
+
+            case "eq": // equals
+                return campoValor.equals(valor);
+
+            default:
+                throw new RuntimeException("Operador no válido");
+        }
+
+    }).collect(toList());
 }
+
+    @Override
+    public Usuario Post( Usuario usuario) {
+        
+        Result result = new Result();
+        
+        usuario.setUsername(usuario.getUsername());
+        usuario.setEmail(usuario.getEmail());
+        usuario.setPassword(usuario.getPassword());
+        usuario.setTaxId(usuario.getTaxId());
+        
+        List<Usuario> lista = usuarioComponent.PostContructUsuario();
+        
+        lista.add(usuario);
+        return usuario;
+    }
+
+
+}
+                
+        
+    
+
+

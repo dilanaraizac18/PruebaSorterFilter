@@ -7,8 +7,10 @@ import java.time.Month;
 import java.util.ArrayList;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"DAraizaPruebaTecnicaSortedFilter.demo", "Component"})
 public class DemoApplication {
 
 	public static void main(String[] args) {
