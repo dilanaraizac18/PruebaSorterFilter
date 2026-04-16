@@ -6,10 +6,14 @@ package DAraizaPruebaTecnicaSortedFilter.demo.RestController;
 
 import DAraizaPruebaTecnicaSortedFilter.demo.DAO.UsuarioNoDAOImplementation;
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Result;
+import DAraizaPruebaTecnicaSortedFilter.demo.ML.Usuario;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -25,23 +29,54 @@ public class UsuarioRestController {
     
      @GetMapping
     public ResponseEntity ObtenerDatos(){
-        Result result = new Result();
+        List<Usuario> usuario = new ArrayList<>();
         try{
-        result = usuarioNoDAOImplementation.GetALL();
+        usuario = usuarioNoDAOImplementation.GetALL();
 
-        if(result.correct){
-            if(result.objects != null || !result.objects.isEmpty()){
-                return ResponseEntity.ok(result);
-            } else{
-               return ResponseEntity.noContent().build();
-            }
-
-        }else {
-                return ResponseEntity.badRequest().body(result.errorMessage);
-            }
+        
+                return ResponseEntity.ok(usuario);
+            
 
         }catch(Exception ex){
             return ResponseEntity.status(500).body(ex);
+        }
+    }
+    
+    @GetMapping("/users/sorter")
+    public ResponseEntity SortedBy(@RequestParam("sortedBy") String sortedBy){
+        List<Usuario> usuario = new ArrayList<>();
+        
+        
+        try{
+             usuario =  usuarioNoDAOImplementation.Sorted(sortedBy);
+            
+            
+                return ResponseEntity.ok(usuario);
+          
+
+        
+        }catch(Exception ex){
+         return ResponseEntity.status(500).body(ex);
+
+        }
+    }
+    
+    @GetMapping("/users/filter")
+    public ResponseEntity FilterBy(@RequestParam("filterBy") String filterBy){
+        List<Usuario> usuario = new ArrayList<>();
+        
+        
+        try{
+             usuario =  usuarioNoDAOImplementation.Filter(filterBy);
+            
+            
+                return ResponseEntity.ok(usuario);
+          
+
+        
+        }catch(Exception ex){
+         return ResponseEntity.status(500).body(ex);
+
         }
     }
 }

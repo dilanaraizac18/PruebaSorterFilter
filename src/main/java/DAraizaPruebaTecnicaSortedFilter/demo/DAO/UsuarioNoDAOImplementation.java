@@ -11,71 +11,179 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collector;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author digis
  */
+@Repository
 public class UsuarioNoDAOImplementation implements IUsuario {
 
+
     @Override
-    public Result GetALL() {
+    public ArrayList<Usuario> GetALL() {
+        
+        UUID uuid = UUID.randomUUID();
+        String uuidString = uuid.toString();
         Result result = new Result();
-        try{
+//        try{
+        ArrayList<Direccion> direcciones = new ArrayList<>();
         ArrayList<Usuario> usuarios = new ArrayList<>();
-
-        Direccion direccion1 = new Direccion(1, "DireccionCasa", "Reforma", "MX");
-        Direccion direccion2 = new Direccion(2, "DireccionTrabajo", "Chabacano", "MX");
-        Direccion direccion3 = new Direccion(3, "DireccionCasa", "Gustavo A. Madero", "MX");
-        Direccion direccion4 = new Direccion(3, "DireccionCasa", "Polanco", "MX");
-
         Usuario usuario1 = new Usuario();
+        
+        usuario1.setIdUsuario(uuidString);
         usuario1.setEmail("usuario@email.com");
         usuario1.setFecha(LocalDate.of(2000, Month.MARCH, 19));
         usuario1.setTaxId("FFAFAFLLFM4OO444");
         usuario1.setTelefono("7444494504");
         usuario1.setUsername("Usuario1");
         usuario1.setPassword("Welcome01");
-        usuario1.setDirecciones(direccion1);
 
+        usuario1.Direcciones = new ArrayList<>();
+        Direccion direccion1 = new Direccion();
+        direccion1.setIdDireccion(1);
+        direccion1.setCalle("Revolucion");
+        direccion1.setNombre("Direccion casa");
+        direccion1.setPais("MX");
+        
+        usuario1.Direcciones.add(direccion1);
+        
+        Direccion direccion2 = new Direccion();
+        direccion2.setIdDireccion(2);
+        direccion2.setCalle("Reforma");
+        direccion2.setNombre("Direccion Trabajo");
+        direccion2.setPais("MX");
+        
+        usuario1.Direcciones.add(direccion2);
+        
         Usuario usuario2 = new Usuario();
-        usuario1.setEmail("usuario2@email.com");
-        usuario1.setFecha(LocalDate.of(1990, Month.AUGUST, 2));
-        usuario1.setTaxId("sSDADAFA4433");
-        usuario1.setTelefono("7444494504");
-        usuario1.setUsername("Usuario2");
-        usuario1.setPassword("Welcome01");
-        usuario1.setDirecciones(direccion3);
+        usuario2.setIdUsuario(uuidString);
+        usuario2.setEmail("usuario2@email.com");
+        usuario2.setFecha(LocalDate.of(1990, Month.AUGUST, 2));
+        usuario2.setTaxId("sSDADAFA4433");
+        usuario2.setTelefono("6444494504");
+        usuario2.setUsername("Usuario2");
+        usuario2.setPassword("Welcome01");
 
+        usuario2.Direcciones = new ArrayList<>();
+        Direccion direccion3 = new Direccion();
+        direccion3.setIdDireccion(3);
+        direccion3.setCalle("Cuzco");
+        direccion3.setNombre("Direccion casa");
+        direccion3.setPais("MX");
+        
+        usuario2.Direcciones.add(direccion3);
+        
         Usuario usuario3 = new Usuario();
-        usuario1.setEmail("usuario@email.com");
-        usuario1.setFecha(LocalDate.of(2003, Month.MARCH, 29));
-        usuario1.setTaxId("FFAFAFLLFM4OO444");
-        usuario1.setTelefono("7444494504");
-        usuario1.setUsername("Usuario1");
-        usuario1.setPassword("Welcome01");
-        usuario1.setDirecciones(direccion4);
+        usuario3.setIdUsuario(uuidString);
+        usuario3.setEmail("usuario@email.com");
+        usuario3.setFecha(LocalDate.of(2003, Month.MARCH, 29));
+        usuario3.setTaxId("FFAFAFLLFM4OO444");
+        usuario3.setTelefono("5444494504");
+        usuario3.setUsername("Usuario1");
+        usuario3.setPassword("Welcome01");
 
+        usuario3.Direcciones = new ArrayList<>();
+        Direccion direccion4 = new Direccion();
+        direccion4.setIdDireccion(4);
+        direccion4.setCalle("Matanza");
+        direccion4.setNombre("Direccion casa");
+        direccion4.setPais("MX");
+        
+        usuario3.Direcciones.add(direccion4);
+        
         usuarios.add(usuario1);
         usuarios.add(usuario2);
         usuarios.add(usuario3);
 
-        result.objects = new ArrayList<>();
+        
+        
+        
+//        result.objects = new ArrayList<>();
+//
+//        for (Usuario usuario : usuarios) {
+//            result.objects.add(usuario);
+//
+//        }
+//        result.correct = true;
+//        }
+//        catch(Exception ex){
+//            result.correct = false;
+//            result.errorMessage = ex.getLocalizedMessage();
+//            result.ex = ex;
+//        }
 
-        for (Usuario usuario : usuarios) {
-            result.objects.add(usuario);
+        return usuarios;
 
+        
+        
+        
+        
+    }
+    
+    public List<Usuario> Sorted(String sortedBy){
+        
+        Result result = new Result();
+        
+        List<Usuario> lista = GetALL();
+        
+        if(sortedBy == null || sortedBy.isEmpty()){
+            return lista;
         }
-        result.correct = true;
+        
+        return lista.stream().sorted((p1, p2)->{
+            switch (sortedBy.toLowerCase()) {
+                case "email":
+                    return p1.getEmail().compareTo(p2.getEmail());
+                case "id":
+                    return p1.getIdUsuario().compareTo(p2.getIdUsuario());
+                case "name":
+                    return p1.getUsername().compareTo(p2.getUsername());
+                case "phone":
+                    return p1.getTelefono().compareTo(p2.getTelefono());
+                case "tax_id":
+                    return p1.getTaxId().compareTo(p2.getTaxId());
+                case "created_at":
+                    return p1.getFecha().compareTo(p2.getFecha());
+                
+                default:
+            
+            
+            return 0;
+            
         }
-        catch(Exception ex){
-            result.correct = false;
-            result.errorMessage = ex.getLocalizedMessage();
-            result.ex = ex;
         }
+        ).collect(toList());
+        
+    
+        
+        
+        
+    
+    }
 
-        return result;
+    @Override
+    public List<Usuario> Filter(String filterBy) {
+        List<Usuario> lista = GetALL();
+        
+        
+        return lista.stream().filter(u -> {
+
+            switch (filterBy.toLowerCase()) {
+                case "email":
+                    return u.getTelefono().startsWith(filterBy);
+                    break;
+                default:
+            }
+        }
+        )
+                
+        
     }
 
 }

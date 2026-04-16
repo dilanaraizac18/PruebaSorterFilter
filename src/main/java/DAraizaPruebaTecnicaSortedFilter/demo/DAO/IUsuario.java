@@ -5,11 +5,15 @@
 package DAraizaPruebaTecnicaSortedFilter.demo.DAO;
 
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Result;
+import DAraizaPruebaTecnicaSortedFilter.demo.ML.Usuario;
+import java.util.List;
 
 /**
  *
  * @author digis
  */
 public interface IUsuario {
-    Result GetALL(); 
+    List<Usuario> GetALL(); 
+    List<Usuario> Sorted(String sortedBy);
+    List<Usuario> Filter(String filterBy);
 }

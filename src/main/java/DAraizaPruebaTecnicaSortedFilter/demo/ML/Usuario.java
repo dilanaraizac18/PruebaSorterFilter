@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Usuario {
     
     
-//    private UUID IdUsuario;
+    private String IdUsuario;
     private String Email;
     private String Username;
     private String Telefono;
@@ -27,14 +27,15 @@ public class Usuario {
 
     public Usuario(){}
     
-    public Usuario(String Email, String Username, String Telefono, String Password, String TaxId, LocalDate Fecha, Direccion Direcciones) {
+    public Usuario(String IdUsuario, String Email, String Username, String Telefono, String Password, String TaxId, LocalDate Fecha, List<Direccion> Direcciones) {
+        this.IdUsuario = IdUsuario;
         this.Email = Email;
         this.Username = Username;
         this.Telefono = Telefono;
         this.Password = Password;
         this.TaxId = TaxId;
         this.Fecha = Fecha;
-        this.Direcciones = (List<Direccion>) Direcciones;
+        this.Direcciones =  Direcciones;
     }
 
     
@@ -43,13 +44,13 @@ public class Usuario {
     
 
 
-//    public UUID getIdUsuario() {
-//        return IdUsuario;
-//    }
-//
-//    public void setIdUsuario(UUID IdUsuario) {
-//        this.IdUsuario = UUID.fromString(Email);
-//    }
+    public String getIdUsuario() {
+        return IdUsuario;
+    }
+
+    public void setIdUsuario(String IdUsuario) {
+        this.IdUsuario = IdUsuario;
+    }
 
     public String getEmail() {
         return Email;
@@ -99,12 +100,12 @@ public class Usuario {
         this.Fecha = Fecha;
     }
 
-    public Direccion getDirecciones() {
-        return (Direccion) Direcciones;
+    public List<Direccion> getDirecciones() {
+        return Direcciones;
     }
 
-    public void setDirecciones(Direccion Direcciones) {
-        this.Direcciones = (List<Direccion>) Direcciones;
+    public void setDirecciones(List<Direccion> Direcciones) {
+        this.Direcciones = Direcciones;
     }
     
     
