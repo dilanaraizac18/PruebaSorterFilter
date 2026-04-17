@@ -12,6 +12,7 @@ import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UsuarioComponent {
     
-    
+        private final List<Usuario> usuarios = new ArrayList<>();
+        
     @PostConstruct
-    public ArrayList<Usuario> PostContructUsuario(){
-                ArrayList<Usuario> usuarios = new ArrayList<>();
+    public void PostContructUsuario(){
 
           UUID uuid = UUID.randomUUID();
         String uuidString = uuid.toString();
@@ -100,9 +101,8 @@ public class UsuarioComponent {
         usuarios.add(usuario2);
         usuarios.add(usuario3);
         
-        
+    }
+    public List<Usuario> getLista() {
         return usuarios;
     }
-    
-    
 }

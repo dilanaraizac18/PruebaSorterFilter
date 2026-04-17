@@ -16,5 +16,7 @@ public interface IUsuario {
     List<Usuario> GetALL(); 
     List<Usuario> Sorted(String sortedBy);
     List<Usuario> Filter(String filterBy);
-    Usuario Post(Usuario usuario);
+    Result Post(Usuario usuario);
+    Result Delete (String email);
+    Result Patch (String email, Usuario usuario);
 }

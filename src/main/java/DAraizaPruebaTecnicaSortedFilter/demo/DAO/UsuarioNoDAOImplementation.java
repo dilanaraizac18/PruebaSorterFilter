@@ -8,7 +8,6 @@ import Component.UsuarioComponent;
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Direccion;
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Result;
 import DAraizaPruebaTecnicaSortedFilter.demo.ML.Usuario;
-import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +26,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsuarioNoDAOImplementation implements IUsuario {
 
-
+    private List<Usuario> lista;
     @Autowired
-    private UsuarioComponent usuarioComponent;
+     UsuarioComponent usuarioComponent;
     
     
     @Override
@@ -37,7 +36,7 @@ public class UsuarioNoDAOImplementation implements IUsuario {
         
       
 
-        return new ArrayList<>(usuarioComponent.PostContructUsuario());
+        return new ArrayList<>(usuarioComponent.getLista());
 
         
         
@@ -85,7 +84,6 @@ public class UsuarioNoDAOImplementation implements IUsuario {
         
     
     }
-
     
  @Override
 public List<Usuario> Filter(String filterBy) {
@@ -159,23 +157,82 @@ public List<Usuario> Filter(String filterBy) {
 }
 
     @Override
-    public Usuario Post( Usuario usuario) {
+    public Result Post( Usuario usuario) {
         
+        UUID uuid = UUID.randomUUID();
+        String uuidString = uuid.toString(); 
+        Result result = new Result();
+        try{
+            usuario = new Usuario(uuidString, usuario.getEmail(), usuario.getPassword(), usuario.getTaxId(),usuario.getTelefono(), usuario.getUsername(), usuario.getFecha(), usuario.getDirecciones());
+            lista = usuarioComponent.getLista();
+            lista.add(usuario);
+            result.correct = true;
+            
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        return result;
+    }
+
+    @Override
+    public Result Delete(String email) {
         Result result = new Result();
         
-        usuario.setUsername(usuario.getUsername());
-        usuario.setEmail(usuario.getEmail());
-        usuario.setPassword(usuario.getPassword());
-        usuario.setTaxId(usuario.getTaxId());
+        lista = usuarioComponent.getLista();
         
-        List<Usuario> lista = usuarioComponent.PostContructUsuario();
+        try{
+            lista.removeIf(p -> p.getEmail().equals(email));
+            
+            result.correct = true;
+            
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
         
-        lista.add(usuario);
-        return usuario;
+        return result;
+        
     }
+
+    @Override
+    public Result Patch(String email, Usuario usuario) {
+        Result result = new Result();
+        
+        lista = usuarioComponent.getLista();
+        
+        try{
+            for (Usuario u : lista) {
+                if(u.getEmail().equals(email)){
+                    u.setEmail(usuario.getEmail());
+                    u.setPassword(usuario.getPassword());
+                    u.setTaxId(usuario.getTaxId());
+                    u.setTelefono(usuario.getTelefono());
+                    u.setUsername(usuario.getUsername());
+                    u.setFecha(usuario.getFecha());
+                    
+                    
+                }
+            }
+            
+            result.correct = true;
+            
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
+    }
+    
+    
 
 
 }
+       
                 
         
     
