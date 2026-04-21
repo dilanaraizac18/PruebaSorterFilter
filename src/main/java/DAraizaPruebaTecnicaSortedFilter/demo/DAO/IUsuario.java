@@ -19,4 +19,5 @@ public interface IUsuario {
     Result Post(Usuario usuario);
     Result Delete (String email);
     Result Patch (String email, Usuario usuario);
+    List<Usuario> GetByUsername (String username);
 }

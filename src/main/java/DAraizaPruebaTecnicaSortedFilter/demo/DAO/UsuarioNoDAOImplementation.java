@@ -227,6 +227,13 @@ public List<Usuario> Filter(String filterBy) {
         
         return result;
     }
+
+    @Override
+    public List<Usuario> GetByUsername(String username) {
+        List<Usuario> lista = GetALL();
+        
+        return lista.stream().filter(u -> u.getUsername().equals(username)).collect(toList());
+    }
     
     
 
