@@ -229,11 +229,27 @@ public List<Usuario> Filter(String filterBy) {
     }
 
     @Override
-    public List<Usuario> GetByUsername(String username) {
+    public Result GetByUsername(String username) {
         List<Usuario> lista = GetALL();
+        Result result = new Result();
         
-        return lista.stream().filter(u -> u.getUsername().equals(username)).collect(toList());
+        try{
+
+                     result.object = lista.stream().filter(u -> u.getUsername().equals(username)).collect(toList());
+
+                     
+                    result.correct = true;
+        }catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        
+        return result;
     }
+
+ 
     
     
 

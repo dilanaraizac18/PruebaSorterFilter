@@ -135,5 +135,26 @@ public class UsuarioRestController {
         }
         return ResponseEntity.status(500).body("No se ha podido realizar la acción");
     }
+    
+    @GetMapping("/GetByUsername")
+    public ResponseEntity GetByUsername (@RequestParam ("username") String username){
+        Result result = new Result();
+        
+        try{
+            result = usuarioNoDAOImplementation.GetByUsername(username);
+            
+            if(result.correct){
+                return ResponseEntity.ok(result);
+            }else{
+                return ResponseEntity.status(400).body(result);
+            }
+        } catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return ResponseEntity.status(500).body("No se ha podido realizar la accion");
+    }
 
 }

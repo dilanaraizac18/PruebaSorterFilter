@@ -1,0 +1,67 @@
+///*
+// * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+// * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+// */
+//package DAraizaPruebaTecnicaSortedFilter.demo.RestController;
+//
+//import DAraizaPruebaTecnicaSortedFilter.demo.ML.Result;
+//import Service.JwtService;
+//import Service.UserDetailServ;
+//import java.util.HashMap;
+//import java.util.Map;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+//import org.springframework.security.core.userdetails.UserDetails;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RestController;
+//
+///**
+// *
+// * @author digis
+// */
+//@RestController
+//@RequestMapping("/auth")
+//public class AuthRestController {
+//
+//    @Autowired
+//    private AuthenticationManager authenticationManager;
+//
+//    @Autowired
+//    private UserDetailServ userDetailsService;
+//
+//    @Autowired
+//    private JwtService jwtService;
+//
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+//
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        loginRequest.get("username"),
+//                        loginRequest.get("password")
+//                )
+//        );
+//
+//        UserDetails user = userDetailsService.loadUserByUsername(loginRequest.get("username"));
+//
+//        if (user == null) {
+//            return ResponseEntity.status(500).body("Acceso denegado");
+//        }
+//
+//        // si todo fue correcto
+//        String token = jwtService.generateToken(user);
+//        // api key 
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("token", token);
+//        Result result = new Result();
+//        result.object = map.get("token");
+//        result.correct = true;
+//        result.errorMessage = user.getAuthorities().toString();
+//
+//        return ResponseEntity.ok(result);
+//    }
+//}
